@@ -7,9 +7,7 @@ import (
 )
 
 const (
-	// most systems today dispaly base 10 values
-	// similarly manufacturers count this was as well
-	kilo        = 1000
+	kilo        = 1024
 	printFormat = "%.2f%s"
 	scanFormat  = "%f%2s"
 )
@@ -34,14 +32,14 @@ const (
 )
 
 /*ToString converts size to a string, using the highest size constant */
-func ToString(size uint64) string {
+func ToString(size int64) string {
 	sizeF, sizeS := getSizeStr(size)
 
 	return fmt.Sprintf(printFormat, sizeF, sizeS)
 }
 
 /*ToNum parses string into num bytes */
-func ToNum(formattedString *string) (uint64, error) {
+func ToNum(formattedString *string) (int64, error) {
 	var sizeF float64
 	var sizeStr string
 	tail := 2
@@ -73,12 +71,7 @@ func ToNum(formattedString *string) (uint64, error) {
 	return getSizeLong(&sizeF, &sizeStr)
 }
 
-/*ToFloat parses string into num bytes */
-func ToFloat(formattedString string, uint64 int64) float64 {
-	return 0
-}
-
-func getSizeStr(size uint64) (float64, string) {
+func getSizeStr(size int64) (float64, string) {
 	fSize := float64(size)
 	if size >= PB {
 		return float64(fSize / PB), sPB
@@ -95,19 +88,19 @@ func getSizeStr(size uint64) (float64, string) {
 	return fSize, sB
 }
 
-func getSizeLong(sizeF *float64, sizeStr *string) (uint64, error) {
+func getSizeLong(sizeF *float64, sizeStr *string) (int64, error) {
 	if strings.Compare(*sizeStr, sB) == 0 {
-		return uint64(*sizeF), nil
+		return int64(*sizeF), nil
 	} else if strings.Compare(*sizeStr, sKB) == 0 {
-		return uint64(*sizeF * KB), nil
+		return int64(*sizeF * KB), nil
 	} else if strings.Compare(*sizeStr, sMB) == 0 {
-		return uint64(*sizeF * MB), nil
+		return int64(*sizeF * MB), nil
 	} else if strings.Compare(*sizeStr, sGB) == 0 {
-		return uint64(*sizeF * GB), nil
+		return int64(*sizeF * GB), nil
 	} else if strings.Compare(*sizeStr, sTB) == 0 {
-		return uint64(*sizeF * TB), nil
+		return int64(*sizeF * TB), nil
 	} else if strings.Compare(*sizeStr, sPB) == 0 {
-		return uint64(*sizeF * PB), nil
+		return int64(*sizeF * PB), nil
 	}
 
 	return 0, errors.New("unknown size: " + *sizeStr)
